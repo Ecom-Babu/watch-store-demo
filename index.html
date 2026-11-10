@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meridian Horologe — Swiss-inspired luxury watches</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+tailwind.config={theme:{extend:{colors:{petrol:'#12302F',deep:'#0C2120',brass:'#C8A96A',mist:'#E9EDEC',ink:'#0F1A1C'},fontFamily:{serif:['Cormorant Garamond','serif'],sans:['Manrope','sans-serif']}}}}
+</script>
+<style>
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',sans-serif;background:#E9EDEC;color:#0F1A1C}
+.glass{background:rgba(12,33,32,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(200,169,106,.25)}
+.view{display:none}.view.active{display:block;animation:fade .5s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.nav-link{position:relative;padding:4px 0;color:#E9EDEC;opacity:.75;transition:.3s}
+.nav-link:hover,.nav-link.on{opacity:1}
+.nav-link::after{content:"";position:absolute;left:0;bottom:-2px;height:1px;width:0;background:#C8A96A;transition:.3s}
+.nav-link:hover::after,.nav-link.on::after{width:100%}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.9rem 1.8rem;background:#C8A96A;color:#0C2120;font-weight:600;border-radius:2px;transition:.3s}
+.btn:hover{background:#dcc084;transform:translateY(-2px);box-shadow:0 10px 30px -10px rgba(200,169,106,.7)}
+.btn-o{background:transparent;color:#E9EDEC;border:1px solid rgba(233,237,236,.4)}
+.btn-o:hover{background:#E9EDEC;color:#0C2120}
+.card img{transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.card:hover img{transform:scale(1.07)}
+.dial-bg{background:radial-gradient(circle at 30% 20%,#1d4a47,#0C2120 70%)}
+.drawer{transform:translateX(100%);transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+.drawer.open{transform:none}
+.overlay{opacity:0;pointer-events:none;transition:.3s}.overlay.open{opacity:1;pointer-events:auto}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.opt{border:1px solid #c5cecd;padding:.55rem 1rem;font-size:.85rem;transition:.2s;cursor:pointer}
+.opt.sel{background:#12302F;color:#fff;border-color:#12302F}
+input,select,textarea{background:#fff;border:1px solid #c5cecd;padding:.8rem 1rem;width:100%;outline:none;transition:.2s}
+input:focus,select:focus,textarea:focus{border-color:#12302F;box-shadow:0 0 0 3px rgba(200,169,106,.3)}
+.tick{stroke-dasharray:60;stroke-dashoffset:60;animation:draw .8s .3s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .6s forwards}
+button:focus-visible,a:focus-visible{outline:2px solid #C8A96A;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="glass fixed top-0 inset-x-0 z-40">
+  <div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
+    <button onclick="go('home')" class="font-serif text-2xl text-white tracking-[.2em]">MERIDIAN</button>
+    <nav class="hidden md:flex gap-9 text-sm">
+      <button class="nav-link" data-v="home" onclick="go('home')">Home</button>
+      <button class="nav-link" data-v="shop" onclick="go('shop')">Collection</button>
+      <button class="nav-link" data-v="about" onclick="go('about')">Maison &amp; Contact</button>
+    </nav>
+    <div class="flex items-center gap-3 text-white">
+      <button onclick="go('shop');setTimeout(()=>document.getElementById('search').focus(),100)" aria-label="Search" class="p-2 hover:text-brass transition"><i data-lucide="search" class="w-5 h-5"></i></button>
+      <button onclick="toggleCart(true)" aria-label="Open cart" class="relative p-2 hover:text-brass transition"><i data-lucide="shopping-bag" class="w-5 h-5"></i><span id="badge" class="absolute -top-0.5 -right-0.5 bg-brass text-deep text-[10px] font-bold w-4 h-4 rounded-full grid place-items-center">0</span></button>
+      <button class="md:hidden p-2" aria-label="Menu" onclick="document.getElementById('mnav').classList.toggle('hidden')"><i data-lucide="menu" class="w-5 h-5"></i></button>
+    </div>
+  </div>
+  <div id="mnav" class="hidden md:hidden px-5 pb-4 flex flex-col gap-3 text-white text-sm">
+    <button onclick="go('home')" class="text-left">Home</button><button onclick="go('shop')" class="text-left">Collection</button><button onclick="go('about')" class="text-left">Maison &amp; Contact</button>
+  </div>
+</header>
+
+<main class="pt-16">
+<!-- HOME -->
+<section id="home" class="view">
+  <div class="dial-bg text-white relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-5 py-16 lg:py-24 grid lg:grid-cols-2 gap-12 items-center">
+      <div>
+        <p class="text-brass text-sm mb-5">Hand-assembled in limited numbers since 1962</p>
+        <h1 class="font-serif text-5xl md:text-7xl leading-[1.02] font-medium">Time, kept the slow way.</h1>
+        <p class="mt-6 text-white/70 max-w-md leading-relaxed">Every Meridian movement is regulated by hand over six weeks. Sapphire crystal, sealed cases, and a five-year guarantee that travels with the watch.</p>
+        <div class="mt-9 flex flex-wrap gap-4">
+          <button class="btn" onclick="go('shop')">Explore the collection <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+          <button class="btn btn-o" onclick="go('about')">Our story</button>
+        </div>
+      </div>
+      <div class="flex justify-center">
+        <svg viewBox="0 0 300 300" class="w-72 md:w-96 drop-shadow-[0_30px_60px_rgba(0,0,0,.5)]" aria-label="Live analog clock">
+          <circle cx="150" cy="150" r="146" fill="#C8A96A"/><circle cx="150" cy="150" r="138" fill="#12302F"/><circle cx="150" cy="150" r="128" fill="#0C2120" stroke="#C8A96A" stroke-opacity=".3"/>
+          <g id="ticks"></g>
+          <text x="150" y="98" text-anchor="middle" fill="#C8A96A" font-family="Cormorant Garamond" font-size="16" letter-spacing="4">MERIDIAN</text>
+          <text x="150" y="212" text-anchor="middle" fill="#E9EDEC" fill-opacity=".5" font-family="Manrope" font-size="7" letter-spacing="2">AUTOMATIC · 100M</text>
+          <line id="hh" x1="150" y1="150" x2="150" y2="95" stroke="#E9EDEC" stroke-width="5" stroke-linecap="round"/>
+          <line id="mh" x1="150" y1="150" x2="150" y2="68" stroke="#E9EDEC" stroke-width="3" stroke-linecap="round"/>
+          <line id="sh" x1="150" y1="165" x2="150" y2="55" stroke="#C8A96A" stroke-width="1.5"/>
+          <circle cx="150" cy="150" r="5" fill="#C8A96A"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-5 py-20">
+    <div class="flex items-end justify-between mb-10">
+      <h2 class="font-serif text-4xl md:text-5xl">Featured collections</h2>
+      <button onclick="go('shop')" class="text-sm underline underline-offset-4 hover:text-petrol">View all watches</button>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6" id="collections"></div>
+  </div>
+
+  <div class="bg-white">
+    <div class="max-w-7xl mx-auto px-5 py-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div><i data-lucide="shield-check" class="text-brass mb-4"></i><h3 class="font-serif text-2xl">5-year guarantee</h3><p class="text-sm text-ink/60 mt-2">Full movement cover, transferable to the next owner.</p></div>
+      <div><i data-lucide="gem" class="text-brass mb-4"></i><h3 class="font-serif text-2xl">Sapphire crystal</h3><p class="text-sm text-ink/60 mt-2">Scratch-resistant glass with anti-reflective coating.</p></div>
+      <div><i data-lucide="truck" class="text-brass mb-4"></i><h3 class="font-serif text-2xl">Insured delivery</h3><p class="text-sm text-ink/60 mt-2">Tracked, signed-for shipping worldwide at no charge.</p></div>
+      <div><i data-lucide="rotate-ccw" class="text-brass mb-4"></i><h3 class="font-serif text-2xl">30-day returns</h3><p class="text-sm text-ink/60 mt-2">Wear it for a month. Send it back if it isn't right.</p></div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-5 py-20">
+    <h2 class="font-serif text-4xl md:text-5xl mb-10">Worn and written about</h2>
+    <div class="grid md:grid-cols-3 gap-6" id="reviews"></div>
+  </div>
+</section>
+
+<!-- SHOP -->
+<section id="shop" class="view">
+  <div class="bg-petrol text-white py-14 text-center px-5">
+    <h1 class="font-serif text-5xl md:text-6xl">The collection</h1>
+    <p class="text-white/60 mt-3">Eight references. Each one numbered and registered to its owner.</p>
+  </div>
+  <div class="max-w-7xl mx-auto px-5 py-10">
+    <div class="flex flex-col md:flex-row gap-5 md:items-center justify-between mb-10">
+      <div id="filters" class="flex flex-wrap gap-2"></div>
+      <div class="relative md:w-80"><i data-lucide="search" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-ink/40"></i><input id="search" placeholder="Search by name or material" class="!pl-11" oninput="renderShop()"></div>
+    </div>
+    <div id="grid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    <p id="empty" class="hidden text-center py-20 text-ink/60">No watches match your search. Clear the search or pick another category.</p>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="view">
+  <div class="max-w-6xl mx-auto px-5 py-20 grid lg:grid-cols-2 gap-14 items-center">
+    <div>
+      <h1 class="font-serif text-5xl md:text-6xl leading-tight">A workshop of eleven watchmakers.</h1>
+      <p class="mt-6 text-ink/70 leading-relaxed">Meridian began in 1962 in a single room above a clockmaker's shop. We still build fewer than 3,000 watches a year, because each one is regulated in five positions and tested for six weeks before it leaves the bench.</p>
+      <p class="mt-4 text-ink/70 leading-relaxed">We use recycled steel, responsibly sourced leather and sapphire grown in-house. Nothing is rushed, and nothing is discounted.</p>
+      <div class="mt-8 grid grid-cols-3 gap-4 text-center">
+        <div class="bg-white py-5"><p class="font-serif text-4xl text-petrol">1962</p><p class="text-xs text-ink/60">Founded</p></div>
+        <div class="bg-white py-5"><p class="font-serif text-4xl text-petrol">11</p><p class="text-xs text-ink/60">Watchmakers</p></div>
+        <div class="bg-white py-5"><p class="font-serif text-4xl text-petrol">6 wks</p><p class="text-xs text-ink/60">Per watch</p></div>
+      </div>
+    </div>
+    <img class="w-full h-[480px] object-cover" src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=80" alt="Watch on a workbench" onerror="this.style.background='#12302F'">
+  </div>
+
+  <div class="bg-white">
+    <div class="max-w-6xl mx-auto px-5 py-20 grid lg:grid-cols-2 gap-14">
+      <div>
+        <h2 class="font-serif text-4xl mb-6">Book a private viewing</h2>
+        <form id="cform" class="space-y-4">
+          <input required placeholder="Full name"><input required type="email" placeholder="Email address">
+          <select><option>Book a viewing</option><option>Service &amp; repair</option><option>Order enquiry</option></select>
+          <textarea required rows="4" placeholder="How can we help?"></textarea>
+          <button class="btn w-full" type="submit">Send message</button>
+          <p id="cok" class="hidden text-sm text-petrol font-medium">Message sent. We reply within one working day.</p>
+        </form>
+      </div>
+      <div>
+        <h2 class="font-serif text-4xl mb-6">Questions, answered</h2>
+        <div id="faq"></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="bg-deep text-white/60 text-sm py-10 text-center px-5">
+  <p class="font-serif text-2xl text-white tracking-[.2em] mb-2">MERIDIAN</p>
+  <p>Demo website for client presentation. No real orders are processed.</p>
+</footer>
+
+<!-- OVERLAY -->
+<div id="ov" class="overlay fixed inset-0 bg-black/60 z-50" onclick="closeAll()"></div>
+
+<!-- CART DRAWER -->
+<aside id="drawer" class="drawer fixed top-0 right-0 h-full w-full max-w-md bg-mist z-[60] flex flex-col shadow-2xl">
+  <div class="flex items-center justify-between p-6 border-b border-ink/10"><h2 class="font-serif text-3xl">Your bag</h2><button onclick="closeAll()" aria-label="Close"><i data-lucide="x"></i></button></div>
+  <div id="cartItems" class="flex-1 overflow-y-auto p-6 space-y-5"></div>
+  <div class="p-6 border-t border-ink/10 bg-white">
+    <div class="flex justify-between mb-1"><span class="text-ink/60">Subtotal</span><span id="subtotal" class="font-serif text-2xl">$0</span></div>
+    <p class="text-xs text-ink/50 mb-4">Insured shipping included.</p>
+    <button id="coBtn" class="btn w-full" onclick="openCheckout()">Proceed to checkout</button>
+  </div>
+</aside>
+
+<!-- PRODUCT MODAL -->
+<div id="pmodal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 overflow-y-auto">
+  <div class="bg-mist w-full max-w-4xl grid md:grid-cols-2 relative my-auto shadow-2xl pop">
+    <button class="absolute top-4 right-4 z-10 bg-white/80 p-2 rounded-full" onclick="closeAll()" aria-label="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+    <img id="pImg" class="w-full h-72 md:h-full object-cover bg-petrol" alt="">
+    <div class="p-8 md:p-10" id="pBody"></div>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div id="cmodal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4 overflow-y-auto">
+  <div class="bg-mist w-full max-w-lg relative my-auto shadow-2xl pop p-8">
+    <div id="coForm">
+      <button class="absolute top-4 right-4" onclick="closeAll()" aria-label="Close"><i data-lucide="x"></i></button>
+      <h2 class="font-serif text-3xl mb-1">Checkout</h2><p id="coTotal" class="text-sm text-ink/60 mb-6"></p>
+      <form id="orderForm" class="space-y-4">
+        <input required name="n" placeholder="Full name"><input required type="tel" placeholder="Phone number">
+        <textarea required rows="3" placeholder="Delivery address"></textarea>
+        <select><option>Credit / debit card</option><option>Bank transfer</option><option>Pay on delivery</option></select>
+        <button class="btn w-full" type="submit">Place order</button>
+      </form>
+    </div>
+    <div id="coDone" class="hidden text-center py-8">
+      <svg viewBox="0 0 80 80" class="w-24 h-24 mx-auto pop"><circle cx="40" cy="40" r="36" fill="#12302F"/><path class="tick" d="M24 41l11 11 21-23" fill="none" stroke="#C8A96A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h2 class="font-serif text-4xl mt-5">Order placed successfully</h2>
+      <p class="text-brass font-semibold text-sm mt-1">(Demo)</p>
+      <p id="orderNo" class="text-ink/60 mt-3 text-sm"></p>
+      <button class="btn mt-7" onclick="closeAll();go('home')">Continue browsing</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const IMG=id=>`https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=900&q=80`;
+const P=[
+ {id:1,name:"Meridian Atlas 40",cat:"Dress",price:2850,img:IMG("1523170335258-f5ed11844a49"),d:"A slim automatic with a sunburst petrol dial and a 38-hour power reserve."},
+ {id:2,name:"Meridian Noir Chronograph",cat:"Chronograph",price:4200,img:IMG("1524592094714-0f0654e20314"),d:"Column-wheel chronograph with a black ceramic bezel and tachymetre scale."},
+ {id:3,name:"Meridian Abyss 300",cat:"Diver",price:3600,img:IMG("1522312346375-d1a52e2b99b3"),d:"300m water resistance, helium valve and a lume-filled unidirectional bezel."},
+ {id:4,name:"Meridian Regent",cat:"Dress",price:3150,img:IMG("12V36G17IbQ"),d:"Rose-gold case, guilloché dial and a hand-stitched calfskin strap."},
+ {id:5,name:"Meridian Voyager GMT",cat:"Sport",price:3980,img:IMG("1587836374828-4dbafa94cf0e"),d:"Dual time zone with a jumping local hour hand, built for frequent travel."},
+ {id:6,name:"Meridian Skeleton Tourbillon",cat:"Limited",price:12800,img:IMG("1542496658-e33a6d0d50f6"),d:"Open-worked tourbillon movement. Edition of 50 pieces, numbered on the caseback."},
+ {id:7,name:"Meridian Celeste Moonphase",cat:"Limited",price:6900,img:IMG("1533139502658-0198f920d8e8"),d:"Moonphase accurate to one day in 122 years, on an aventurine night-sky dial."},
+ {id:8,name:"Meridian Pilot 42",cat:"Sport",price:2480,img:IMG("1547996160-81dfa63595aa"),d:"Big-crown field watch with a matte dial, anti-magnetic cage and a 5-day reserve."}
+];
+const CATS=["All","Dress","Sport","Diver","Chronograph","Limited"];
+const REVIEWS=[["Rohan M.","Atlas 40","The finishing is better than watches at twice the price. It disappears under a cuff."],["Elena V.","Abyss 300","Wore it diving in Komodo. Lume still glows hours later and the bracelet never pinched."],["James T.","Skeleton Tourbillon","The movement is mesmerising. Delivery was insured, signed for, and flawless."]];
+const FAQ=[["How long is the guarantee?","Every Meridian carries a five-year movement guarantee, transferable if you sell the watch."],["Do you ship internationally?","Yes. Delivery is free, insured and signed-for to over 60 countries."],["Can I return a watch?","Within 30 days, unworn and with its original packaging, for a full refund."],["How often should I service it?","Every five to seven years. Our workshop services any Meridian at a fixed price."]];
+let cart=[],cat="All",sel={};
+const $=s=>document.querySelector(s),fmt=n=>"$"+n.toLocaleString();
+const imgTag=(p,c)=>`<img src="${p.img}" alt="${p.name}" loading="lazy" class="${c}" onerror="this.style.visibility='hidden'">`;
+
+function go(v){document.querySelectorAll('.view').forEach(e=>e.classList.toggle('active',e.id===v));document.querySelectorAll('.nav-link').forEach(b=>b.classList.toggle('on',b.dataset.v===v));$('#mnav').classList.add('hidden');closeAll();scrollTo({top:0});}
+function closeAll(){['pmodal','cmodal'].forEach(i=>{$('#'+i).classList.add('hidden');$('#'+i).classList.remove('flex')});$('#drawer').classList.remove('open');$('#ov').classList.remove('open');document.body.style.overflow='';}
+function showOv(){$('#ov').classList.add('open');document.body.style.overflow='hidden';}
+function modal(id){closeAll();$('#'+id).classList.remove('hidden');$('#'+id).classList.add('flex');showOv();}
+
+// Live dial
+(()=>{let t='';for(let i=0;i<60;i++){const a=i*6*Math.PI/180,l=i%5?4:12,r=122;t+=`<line x1="${150+Math.sin(a)*r}" y1="${150-Math.cos(a)*r}" x2="${150+Math.sin(a)*(r-l)}" y2="${150-Math.cos(a)*(r-l)}" stroke="${i%5?'#E9EDEC66':'#C8A96A'}" stroke-width="${i%5?1:2.5}"/>`}$('#ticks').innerHTML=t;
+const tick=()=>{const d=new Date,s=d.getSeconds()+d.getMilliseconds()/1000,m=d.getMinutes()+s/60,h=d.getHours()%12+m/60;
+$('#sh').setAttribute('transform',`rotate(${s*6} 150 150)`);$('#mh').setAttribute('transform',`rotate(${m*6} 150 150)`);$('#hh').setAttribute('transform',`rotate(${h*30} 150 150)`);requestAnimationFrame(tick)};tick();})();
+
+// Home
+$('#collections').innerHTML=[["Dress",3],["Diver",2],["Limited",5]].map(([c,i])=>{const p=P[i];return `<button onclick="cat='${c}';renderShop();go('shop')" class="card relative h-96 overflow-hidden text-left group">${imgTag(p,'absolute inset-0 w-full h-full object-cover')}<div class="absolute inset-0 bg-gradient-to-t from-deep/90 via-deep/20 to-transparent"></div><div class="absolute bottom-0 p-6 text-white"><h3 class="font-serif text-3xl">${c} watches</h3><p class="text-sm text-white/70 flex items-center gap-2 mt-1">Shop the range <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition"></i></p></div></button>`}).join('');
+$('#reviews').innerHTML=REVIEWS.map(r=>`<figure class="bg-white p-7 border-t-2 border-brass"><div class="flex text-brass mb-4">${'<i data-lucide="star" class="w-4 h-4 fill-current"></i>'.repeat(5)}</div><blockquote class="font-serif text-xl leading-snug">“${r[2]}”</blockquote><figcaption class="text-sm text-ink/60 mt-5">${r[0]}, owns the ${r[1]}</figcaption></figure>`).join('');
+
+// Shop
+function renderShop(){
+ $('#filters').innerHTML=CATS.map(c=>`<button onclick="cat='${c}';renderShop()" class="px-5 py-2 text-sm border transition ${c===cat?'bg-petrol text-white border-petrol':'border-ink/20 hover:border-petrol'}">${c}</button>`).join('');
+ const q=$('#search').value.trim().toLowerCase();
+ const list=P.filter(p=>(cat==="All"||p.cat===cat)&&(p.name+p.cat+p.d).toLowerCase().includes(q));
+ $('#empty').classList.toggle('hidden',list.length>0);
+ $('#grid').innerHTML=list.map(p=>`<article class="card bg-white group"><button class="block w-full text-left" onclick="openProduct(${p.id})"><div class="h-72 overflow-hidden bg-petrol">${imgTag(p,'w-full h-full object-cover')}</div><div class="p-5"><p class="text-xs text-brass font-semibold">${p.cat}</p><h3 class="font-serif text-2xl leading-tight mt-1">${p.name}</h3><div class="flex justify-between items-center mt-3"><span class="font-medium">${fmt(p.price)}</span><span class="text-xs text-ink/50 group-hover:text-petrol">Quick view</span></div></div></button></article>`).join('');
+ lucide.createIcons();
+}
+
+// Product modal
+function openProduct(id){const p=P.find(x=>x.id===id);sel={id,size:"40mm",strap:"Leather"};
+ $('#pImg').src=p.img;$('#pImg').alt=p.name;
+ $('#pBody').innerHTML=`<p class="text-xs text-brass font-semibold">${p.cat}</p><h2 class="font-serif text-4xl mt-1">${p.name}</h2><p class="text-2xl mt-2">${fmt(p.price)}</p><p class="text-ink/70 mt-4 leading-relaxed">${p.d}</p>
+ <p class="text-sm font-semibold mt-6 mb-2">Case size</p><div class="flex gap-2" data-g="size">${["38mm","40mm","42mm"].map(s=>`<button class="opt ${s==='40mm'?'sel':''}" onclick="pick(this,'size','${s}')">${s}</button>`).join('')}</div>
+ <p class="text-sm font-semibold mt-5 mb-2">Strap</p><div class="flex gap-2" data-g="strap">${["Leather","Steel","Rubber"].map(s=>`<button class="opt ${s==='Leather'?'sel':''}" onclick="pick(this,'strap','${s}')">${s}</button>`).join('')}</div>
+ <button class="btn w-full mt-8" onclick="addCart()"><i data-lucide="shopping-bag" class="w-4 h-4"></i> Add to cart</button><p class="text-xs text-ink/50 mt-3">Free insured delivery · 5-year guarantee</p>`;
+ modal('pmodal');lucide.createIcons();}
+function pick(el,k,v){sel[k]=v;el.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');}
+
+// Cart
+function addCart(){const key=`${sel.id}-${sel.size}-${sel.strap}`,f=cart.find(c=>c.key===key);f?f.qty++:cart.push({key,id:sel.id,size:sel.size,strap:sel.strap,qty:1});renderCart();toggleCart(true);}
+function qty(key,d){const c=cart.find(x=>x.key===key);c.qty+=d;if(c.qty<1)cart=cart.filter(x=>x.key!==key);renderCart();}
+function toggleCart(o){closeAll();if(o){$('#drawer').classList.add('open');showOv();}}
+function total(){return cart.reduce((s,c)=>s+P.find(p=>p.id===c.id).price*c.qty,0)}
+function renderCart(){
+ $('#badge').textContent=cart.reduce((s,c)=>s+c.qty,0);$('#subtotal').textContent=fmt(total());$('#coBtn').disabled=!cart.length;$('#coBtn').style.opacity=cart.length?1:.4;
+ $('#cartItems').innerHTML=cart.length?cart.map(c=>{const p=P.find(x=>x.id===c.id);return `<div class="flex gap-4"><img src="${p.img}" alt="" class="w-20 h-24 object-cover bg-petrol"><div class="flex-1"><h4 class="font-serif text-xl leading-tight">${p.name}</h4><p class="text-xs text-ink/60">${c.size} · ${c.strap}</p><div class="flex items-center justify-between mt-3"><div class="flex items-center border border-ink/20"><button class="px-3 py-1" onclick="qty('${c.key}',-1)" aria-label="Decrease">−</button><span class="px-2 text-sm">${c.qty}</span><button class="px-3 py-1" onclick="qty('${c.key}',1)" aria-label="Increase">+</button></div><span class="font-medium">${fmt(p.price*c.qty)}</span></div></div></div>`}).join(''):`<div class="text-center text-ink/60 py-20"><i data-lucide="shopping-bag" class="mx-auto mb-3"></i><p>Your bag is empty.</p><button class="btn mt-5" onclick="go('shop')">Browse the collection</button></div>`;
+ lucide.createIcons();}
+
+// Checkout
+function openCheckout(){if(!cart.length)return;$('#coTotal').textContent=`${cart.reduce((s,c)=>s+c.qty,0)} item(s) · Total ${fmt(total())}`;$('#coForm').classList.remove('hidden');$('#coDone').classList.add('hidden');modal('cmodal');lucide.createIcons();}
+$('#orderForm').addEventListener('submit',e=>{e.preventDefault();$('#orderNo').textContent=`Order MH-${Math.floor(100000+Math.random()*900000)} · Confirmation sent to your phone.`;$('#coForm').classList.add('hidden');$('#coDone').classList.remove('hidden');cart=[];renderCart();e.target.reset();});
+
+// About
+$('#faq').innerHTML=FAQ.map((f,i)=>`<div class="border-b border-ink/15"><button class="w-full flex justify-between items-center py-5 text-left font-medium" onclick="faq(${i})" aria-expanded="false">${f[0]}<i data-lucide="plus" class="w-4 h-4 transition-transform shrink-0"></i></button><div class="faq-a text-ink/70 text-sm leading-relaxed"><p class="pb-5">${f[1]}</p></div></div>`).join('');
+function faq(i){document.querySelectorAll('#faq > div').forEach((d,j)=>{const a=d.querySelector('.faq-a'),open=j===i&&!a.style.maxHeight;a.style.maxHeight=open?a.scrollHeight+'px':null;d.querySelector('svg,i').style.transform=open?'rotate(45deg)':'';d.querySelector('button').setAttribute('aria-expanded',open)})}
+$('#cform').addEventListener('submit',e=>{e.preventDefault();$('#cok').classList.remove('hidden');e.target.reset();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
+
+renderShop();renderCart();go('home');lucide.createIcons();
+</script>
+</body>
+</html>
